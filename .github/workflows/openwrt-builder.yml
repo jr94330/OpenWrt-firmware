@@ -37,8 +37,8 @@ jobs:
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        cp $FEEDS_CONF feeds.conf.default
-        cp $CONFIG_FILE .config
+        cp feeds.conf.default feeds.conf.default.bak
+        cp .config .config.bak
 
     - name: Run DIY scripts part 1
       run: |
