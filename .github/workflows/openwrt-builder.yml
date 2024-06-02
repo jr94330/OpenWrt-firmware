@@ -58,7 +58,7 @@ jobs:
         cd openwrt
         make defconfig
         make download -j$(nproc) V=s
-        make -j1 V=s | tee build.log
+        make -j1 V=s 2>&1 | tee build.log
       continue-on-error: true
 
     - name: Upload build logs if build fails
