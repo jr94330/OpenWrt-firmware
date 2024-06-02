@@ -32,6 +32,12 @@ jobs:
       run: |
         git clone --depth 1 ${{ env.REPO_URL }} -b ${{ env.REPO_BRANCH }} openwrt
 
+    - name: Run DIY scripts part 1
+      run: |
+        cd openwrt
+        chmod +x ../diy-part1.sh
+        ../diy-part1.sh
+
     - name: Configure build
       run: |
         cd openwrt
@@ -39,19 +45,13 @@ jobs:
         ./scripts/feeds install -a
         if [ -f ${{ env.CONFIG_FILE }} ]; then
           cp ${{ env.CONFIG_FILE }} .config
-        else
-          touch .config
         fi
-
-    - name: Run DIY scripts part 1
-      run: |
-        cd openwrt
-        ./diy-part1.sh || true
 
     - name: Run DIY scripts part 2
       run: |
         cd openwrt
-        ./diy-part2.sh || true
+        chmod +x ../diy-part2.sh
+        ../diy-part2.sh
 
     - name: Build OpenWrt
       run: |
@@ -75,7 +75,9 @@ jobs:
       with:
         name: OpenWrt Firmware
         path: |
-          /home/runner/work/OpenWrt-firmware/OpenWrt-firmware/openwrt/bin/targets/**
+          openwrt/bin/targets/**/openwrt-*-generic-squashfs-rootfs.img.gz
+          openwrt/bin/targets/**/openwrt-*-generic-squashfs-combined-efi.img.gz
+        if-no-files-found: warn
 
     - name: Trigger build
       if: steps.cacheHash.outputs.cache-hit != 'true'
