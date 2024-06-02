@@ -109,3 +109,8 @@ jobs:
         UPLOAD_RELEASE: $UPLOAD_RELEASE
         TZ: $TZ
         FIRMWARE: $FIRMWARE
+
+    - name: Clean up
+      run: |
+        sudo rm -rf /home/runner/work/*
+        sudo rm -rf /home/runner/runners/*
