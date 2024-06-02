@@ -50,7 +50,7 @@ jobs:
       if: steps.cacheHash.outputs.cache-hit != 'true'
       uses: peter-evans/repository-dispatch@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
         repository: jr94330/OpenWrt-firmware
         event-type: Source Code Update
 
