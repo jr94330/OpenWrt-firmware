@@ -114,3 +114,19 @@ jobs:
       run: |
         sudo rm -rf /home/runner/work/*
         sudo rm -rf /home/runner/runners/*
+
+    - name: Create Release
+      if: success()
+      run: |
+        release_id=$(curl -X POST \
+        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/jr94330/OpenWrt-firmware/releases \
+        -d '{"tag_name": "v1.0.0", "name": "Release 1.0.0", "body": "Release 1.0.0 Description", "draft": false, "prerelease": false}' \
+        | jq -r '.id')
+
+        curl -X POST \
+        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://uploads.github.com/repos/jr94330/OpenWrt-firmware/releases/$release_id/assets?name=openwrt-firmware.img.gz \
+        --upload-file path/to/openwrt-firmware.img.gz
