@@ -55,7 +55,7 @@ jobs:
         cd openwrt
         make defconfig
         make download -j$(nproc) V=s
-        make -j1 V=s
+        make -j1 V=s | tee build.log
       continue-on-error: true
 
     - name: Upload build logs if build fails
@@ -64,6 +64,7 @@ jobs:
       with:
         name: Build Logs
         path: openwrt/build.log
+        if-no-files-found: warn
 
     - name: Upload firmware
       if: success()
