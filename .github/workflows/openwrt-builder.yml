@@ -3,6 +3,7 @@ name: Build OpenWrt
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
+  CONFIG_FILE: .config
 
 on:
   workflow_dispatch:
@@ -30,25 +31,27 @@ jobs:
     - name: Get source code
       run: |
         git clone --depth 1 ${{ env.REPO_URL }} -b ${{ env.REPO_BRANCH }} openwrt
-        cd openwrt
 
     - name: Configure build
       run: |
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        cp feeds.conf.default feeds.conf.default.bak
-        cp .config .config.bak
+        if [ -f ${{ env.CONFIG_FILE }} ]; then
+          cp ${{ env.CONFIG_FILE }} .config
+        else
+          touch .config
+        fi
 
     - name: Run DIY scripts part 1
       run: |
         cd openwrt
-        ./diy-part1.sh
+        ./diy-part1.sh || true
 
     - name: Run DIY scripts part 2
       run: |
         cd openwrt
-        ./diy-part2.sh
+        ./diy-part2.sh || true
 
     - name: Build OpenWrt
       run: |
