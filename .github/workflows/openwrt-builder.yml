@@ -7,8 +7,6 @@ env:
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: 0 */18 * * *
 
 jobs:
   build:
@@ -17,6 +15,18 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Display disk usage before cleanup
+      run: df -h
+
+    - name: Cleanup disk space
+      run: |
+        sudo apt-get clean
+        sudo rm -rf /var/lib/apt/lists/*
+        docker system prune -af
+
+    - name: Display disk usage after cleanup
+      run: df -h
 
     - name: Setup OpenWrt build environment
       run: |
@@ -52,6 +62,9 @@ jobs:
         cd openwrt
         chmod +x ../diy-part2.sh
         ../diy-part2.sh
+
+    - name: Display disk usage before build
+      run: df -h
 
     - name: Build OpenWrt
       run: |
@@ -95,7 +108,6 @@ jobs:
         keep_min_download_counts: 0
         delete_expired_data: 0
         delete_prerelease_only: false
-        github_rest_api_url: api.github.com
       env:
         GITHUB_TOKEN: ${{ secrets.ACTIONS_TRIGGER_PAT }}
         REPO_URL: $REPO_URL
@@ -114,6 +126,9 @@ jobs:
       run: |
         sudo rm -rf /home/runner/work/*
         sudo rm -rf /home/runner/runners/*
+
+    - name: Display final disk usage
+      run: df -h
 
     - name: Create Release
       if: success()
