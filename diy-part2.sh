@@ -23,14 +23,11 @@ sed -i 's/OpenWrt/XiaoMi BE7000 OpenWrt/g' package/base-files/files/bin/config_g
 # Ensure the following plugins are installed
 PLUGINS=(
     luci-app-filetransfer
-    luci-app-syncdial
     luci-app-clash
-    luci-app-ramfree
     luci-app-easymesh
     luci-app-argon-config
     luci-app-attendedsysupgrade
     luci-app-docker
-    luci-app-passwall
 )
 
 for plugin in "${PLUGINS[@]}"; do
